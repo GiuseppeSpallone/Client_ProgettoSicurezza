@@ -1,5 +1,6 @@
 package com.client_progettosicurezza.api;
 
+import com.client_progettosicurezza.results.ResultAggiornamento;
 import com.client_progettosicurezza.results.ResultImmagine;
 import com.client_progettosicurezza.results.ResultListaImmagini;
 
@@ -14,5 +15,8 @@ public interface APIService {
 
     @GET("immagini/{id}")
     Call<ResultImmagine> getImmagine(@Path("id") Integer id);
+
+    @GET("aggiornamento")
+    Call<ResultAggiornamento> getAggiornamento();
 
 }

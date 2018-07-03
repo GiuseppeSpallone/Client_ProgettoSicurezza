@@ -1,7 +1,9 @@
 package com.client_progettosicurezza.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.client_progettosicurezza.DownloadImmagine;
+import com.client_progettosicurezza.MainActivity;
 import com.client_progettosicurezza.R;
 import com.client_progettosicurezza.models.Immagine;
 
@@ -48,6 +51,7 @@ public class AdapterImmagine extends RecyclerView.Adapter<AdapterImmagine.ViewHo
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
+                Toast.makeText(context, "Download " + immagine.getTitolo() + "." + immagine.getFormato(), Toast.LENGTH_LONG).show();
                 DownloadImmagine downloadImmagine = new DownloadImmagine();
                 downloadImmagine.download(context, immagine.getTitolo(), immagine.getFormato(), immagine.getFile());
             }
