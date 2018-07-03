@@ -1,4 +1,3 @@
-//new
 package com.client_progettosicurezza;
 
 import android.app.DownloadManager;
@@ -19,4 +18,3 @@ public class DownloadImmagine {
         downloadManager.enqueue(request);
     }
 }
-//new

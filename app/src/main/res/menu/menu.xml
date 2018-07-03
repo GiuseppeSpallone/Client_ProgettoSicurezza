@@ -6,4 +6,8 @@
         android:id="@+id/update"
         android:title="Aggiorna" />
 
+    <item
+        android:id="@+id/info"
+        android:title="Informazioni" />
+
 </menu>
