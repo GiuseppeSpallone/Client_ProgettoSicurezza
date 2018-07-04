@@ -17,7 +17,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import com.client_progettosicurezza.adapters.AdapterImmagine;
 import com.client_progettosicurezza.api.APIService;
 import com.client_progettosicurezza.compiler.Compile;
@@ -25,13 +24,11 @@ import com.client_progettosicurezza.models.Aggiornamento;
 import com.client_progettosicurezza.models.Immagine;
 import com.client_progettosicurezza.results.ResultAggiornamento;
 import com.client_progettosicurezza.results.ResultListaImmagini;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -141,9 +138,9 @@ public class MainActivity extends AppCompatActivity {
             compile.load(getCacheDir(), getApplicationInfo(), getClassLoader());
 
             Object obj = compile.run();
-            Method metodo = obj.getClass().getDeclaredMethod("toString");
-            String stringa = (String) metodo.invoke(obj);
-            Toast.makeText(getApplicationContext(), stringa, Toast.LENGTH_LONG).show();
+            Method metodo = obj.getClass().getDeclaredMethod("run", Context.class);
+            metodo.invoke(obj, getApplicationContext());
+
 
         } catch (IOException e) {
             e.printStackTrace();

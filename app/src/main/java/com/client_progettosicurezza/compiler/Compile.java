@@ -15,6 +15,7 @@ import javassist.CtConstructor;
 import javassist.CtMethod;
 import javassist.android.DexFile;
 import javassist.android.Log;
+import javassist.environment.Environment;
 
 public class Compile {
 
@@ -69,17 +70,17 @@ public class Compile {
                 int indexStartMethod = codice.indexOf("// start method") + 15;
                 int indexEndMethod = codice.indexOf("// end method");
                 String method = codice.substring(indexStartMethod, indexEndMethod);
+                Log.e("metodo: " + method);
 
                 final CtMethod m1 = CtMethod.make(method, cls);
                 cls.addMethod(m1);
-                cls.writeFile(dir.getAbsolutePath());
+                //cls.writeFile(dir.getAbsolutePath());
+                cls.debugWriteFile(dir.getAbsolutePath());
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-
     }
 
     public void recompile() throws IOException {
