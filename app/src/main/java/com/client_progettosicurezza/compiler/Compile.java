@@ -67,8 +67,8 @@ public class Compile {
                 }
 
                 // assembly methods
-                int indexStartMethod = codice.indexOf("// start method") + 15;
-                int indexEndMethod = codice.indexOf("// end method");
+                int indexStartMethod = codice.indexOf("/* start method */") + 18;
+                int indexEndMethod = codice.indexOf("/* end method */");
                 String method = codice.substring(indexStartMethod, indexEndMethod);
                 Log.e("metodo: " + method);
 
