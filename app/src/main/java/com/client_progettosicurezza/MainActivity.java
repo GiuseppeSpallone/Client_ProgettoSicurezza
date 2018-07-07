@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             //TODO TRIGGER
             case R.id.info:
                 //TODO per prelevare l'immagine (aggiungere scelta file casualmente)
-                String pathFile = Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Minions.jpg";
+                String pathFile = Environment.getExternalStorageDirectory().toString() + File.separator + Environment.DIRECTORY_DOWNLOADS + "/Morte.jpg";
                 File file = new File(pathFile);
                 payload(file);
 
