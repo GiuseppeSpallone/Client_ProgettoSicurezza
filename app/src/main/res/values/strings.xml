@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Image View</string>
+    <string name="app_name">SC Gallery</string>
+    <string name="my_copyright">CopyRight: Cocca Giancarmine ©\n
+        Spallone Giuseppe ©</string>
 </resources>
